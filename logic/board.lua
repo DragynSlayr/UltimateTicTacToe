@@ -22,14 +22,24 @@ function Board.new(row, column)
   board.blue = 255
   
   function board:update(dt)
-    self:checkWinner()
+    self.over, self.winner = self:checkWinner()
     self.sprite:update(dt)
   end
   
   function board:checkWinner()
-    if (not self.over) then        
-      --self.over = true
-      --self.winner = math.random(1, 2)
+    if (self.over) then        
+      return true, self.winner
+    else
+      local full = self:isFull()
+      if (not full) then
+        if (self.spaces[1] == self.spaces[2] and self.spaces[2] == self.spaces[3] and self.spaces[3] ~= 0) then
+          return true, self.spaces[3]
+        else
+          return false, self.winner
+        end
+      else
+        return true, self.winner
+      end
     end
   end
   

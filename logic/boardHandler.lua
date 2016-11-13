@@ -38,7 +38,11 @@ function BoardHandler.checkClick(x, y, button)
             elseif (inner_index == 3) then
               inner_index = 7
             end
-            BoardHandler.usable = inner_index
+            if (BoardHandler.boards[inner_index].over) then
+              BoardHandler.usable = 0
+            else
+              BoardHandler.usable = inner_index
+            end
           end
         end
       end
@@ -80,6 +84,12 @@ function BoardHandler.draw()
   for i = 1, #BoardHandler.boards do
     if (i == BoardHandler.usable and not BoardHandler.boards[i].over) then
       love.graphics.setColor(Driver.colors[Driver.turn + 1]())
+    elseif (BoardHandler.usable == 0) then
+      if (BoardHandler.boards[i].over) then
+        love.graphics.setColor(BoardHandler.boards[i]:getColor())
+      else
+        love.graphics.setColor(0, 255, 0, 255)
+      end
     else
       love.graphics.setColor(BoardHandler.boards[i]:getColor())
     end
