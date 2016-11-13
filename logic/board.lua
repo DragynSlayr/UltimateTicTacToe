@@ -17,8 +17,37 @@ function Board.new(row, column)
   board.over = false
   board.winner = 0
   
+  board.red = 255
+  board.green = 255
+  board.blue = 255
+  
   function board:update(dt)
+    self:checkWinner()
     self.sprite:update(dt)
+  end
+  
+  function board:checkWinner()
+    if (not self.over) then        
+      --self.over = true
+      --self.winner = math.random(1, 2)
+    end
+  end
+  
+  function board:isFull()
+    for i = 1, #self.spaces do
+      if (self.spaces[i] == 0) then
+        return false
+      end
+    end
+    return true
+  end
+  
+  function board:getColor()
+    if (self.winner == 0) then
+      return self.red, self.green, self.blue, 255
+    else
+      return Driver.colors[self.winner]()
+    end
   end
   
   function board:draw()

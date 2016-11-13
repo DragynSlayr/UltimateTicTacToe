@@ -1,6 +1,8 @@
 local BoardHandler = {}
 Board = require("logic.board")
 
+BoardHandler.usable = 0
+
 BoardHandler.boards = {}
 local index = 1
 for i = 0, 2 do
@@ -21,8 +23,26 @@ function BoardHandler.checkClick(x, y, button)
     local col_adj = math.floor(column / 3)
     local index = row_adj + (3 * col_adj) + 1
     
-    BoardHandler.boards[index].spaces[inner_index] = Driver.turn + 1
-    Driver.turn = (Driver.turn + 1) % 2
+    if (index == BoardHandler.usable or BoardHandler.usable == 0) then
+      if (not BoardHandler.boards[index]:isFull()) then
+        if (BoardHandler.boards[index].spaces[inner_index] == 0) then
+          if (not BoardHandler.boards[index].over) then
+            BoardHandler.boards[index].spaces[inner_index] = Driver.turn + 1
+            Driver.turn = (Driver.turn + 1) % 2
+            if (inner_index == 2 or inner_index == 6) then
+              inner_index = inner_index + 2
+            elseif (inner_index == 4 or inner_index == 8) then
+              inner_index = inner_index - 2
+            elseif (inner_index == 7) then
+              inner_index = 3
+            elseif (inner_index == 3) then
+              inner_index = 7
+            end
+            BoardHandler.usable = inner_index
+          end
+        end
+      end
+    end
   end
 end
 
@@ -57,8 +77,12 @@ end
 function BoardHandler.draw()
   BoardHandler.drawBoard()
   
-  love.graphics.setColor(255, 255, 255, 255)
   for i = 1, #BoardHandler.boards do
+    if (i == BoardHandler.usable and not BoardHandler.boards[i].over) then
+      love.graphics.setColor(Driver.colors[Driver.turn + 1]())
+    else
+      love.graphics.setColor(BoardHandler.boards[i]:getColor())
+    end
     BoardHandler.boards[i]:draw()
   end
 end

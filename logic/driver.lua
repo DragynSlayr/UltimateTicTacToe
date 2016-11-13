@@ -6,6 +6,10 @@ Driver.turn = 0
 Driver.x, Driver.y = 0, 0
 Driver.message = ""
 
+Driver.colors = {}
+Driver.colors[1] = function () return 0, 0, 255, 255 end
+Driver.colors[2] = function () return 255, 0, 0, 255 end
+
 function Driver.mousePressed(x, y, button, is_touch)
   if x >= GAME_START_X and x <= GAME_START_X + GAME_WIDTH then
     BoardHandler.checkClick(x, y, button)
@@ -27,6 +31,7 @@ end
 
 function Driver.update(dt)
   Driver.x, Driver.y = love.mouse.getPosition()
+  Driver.message = string.format("LOC: %d", BoardHandler.usable)
   BoardHandler.update(dt)
 end
 
