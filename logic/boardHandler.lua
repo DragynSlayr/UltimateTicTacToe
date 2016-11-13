@@ -12,13 +12,17 @@ end
 
 function BoardHandler.checkClick(x, y, button)
   if button == 1 then
-    local row = y / (SMALL_CELL_SIZE + BIG_BORDER_SIZE)
-    local column = (x - GAME_START_X) / (SMALL_CELL_SIZE + BIG_BORDER_SIZE)
+    local row = math.floor(y / (SMALL_CELL_SIZE + BIG_BORDER_SIZE))
+    local column = math.floor((x - GAME_START_X) / (SMALL_CELL_SIZE + BIG_BORDER_SIZE))
     
-    row = math.floor(row)
-    column = math.floor(column)
+    local inner_index = math.floor(((column % 3) + (3 * (row % 3))) + 1)
     
-    print(row, column)
+    local row_adj = math.floor(row / 3)
+    local col_adj = math.floor(column / 3)
+    local index = row_adj + (3 * col_adj) + 1
+    
+    BoardHandler.boards[index].spaces[inner_index] = Driver.turn + 1
+    Driver.turn = (Driver.turn + 1) % 2
   end
 end
 

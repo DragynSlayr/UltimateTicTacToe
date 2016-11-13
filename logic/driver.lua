@@ -4,6 +4,7 @@ BoardHandler = require("logic.boardHandler")
 Driver.turn = 0
 
 Driver.x, Driver.y = 0, 0
+Driver.message = ""
 
 function Driver.mousePressed(x, y, button, is_touch)
   if x >= GAME_START_X and x <= GAME_START_X + GAME_WIDTH then
@@ -41,6 +42,7 @@ function Driver.draw()
   
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.print("(" .. Driver.x .. ", " .. Driver.y .. ")")
+  love.graphics.print(Driver.message, 0, 15)
   
   love.graphics.setColor(r, g, b, a)
 end

@@ -33,7 +33,7 @@ function Board.new(row, column)
     end
     for i = 0, 2 do
       for j = 0, 2 do
-        char = self.spaces[(j + (i * 3)) + 1]
+        char = self.spaces[(i + (j * 3)) + 1]
         x = self.x - (SMALL_CELL_SIZE + SMALL_BORDER_SIZE) + (i * (SMALL_CELL_SIZE + SMALL_BORDER_SIZE))
         y = self.y - (SMALL_CELL_SIZE + SMALL_BORDER_SIZE) + (j * (SMALL_CELL_SIZE + SMALL_BORDER_SIZE))
         if char == 0 then
