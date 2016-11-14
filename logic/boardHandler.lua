@@ -130,17 +130,26 @@ function BoardHandler.draw()
   BoardHandler.drawBoard()
   
   for i = 1, #BoardHandler.boards do
-    if (i == BoardHandler.usable and not BoardHandler.boards[i].over) then
-      love.graphics.setColor(Driver.colors[Driver.turn + 1]())
-    elseif (BoardHandler.usable == 0) then
+    if (BoardHandler.over) then
       if (BoardHandler.boards[i].over) then
         love.graphics.setColor(BoardHandler.boards[i]:getColor())
       else
         love.graphics.setColor(0, 255, 0, 255)
       end
     else
-      love.graphics.setColor(BoardHandler.boards[i]:getColor())
+      if (i == BoardHandler.usable and not BoardHandler.boards[i].over) then
+        love.graphics.setColor(0, 255, 0, 255)
+      elseif (BoardHandler.usable == 0) then
+        if (BoardHandler.boards[i].over) then
+          love.graphics.setColor(BoardHandler.boards[i]:getColor())
+        else
+          love.graphics.setColor(0, 255, 0, 255)
+        end
+      else
+        love.graphics.setColor(BoardHandler.boards[i]:getColor())
+      end
     end
+    
     BoardHandler.boards[i]:draw()
   end
   
@@ -151,7 +160,7 @@ function BoardHandler.draw()
       BoardHandler.draw_sprite = BoardHandler.giant_o
     end
     
-    love.graphics.setColor(0, 255, 255, 255)
+    love.graphics.setColor(Driver.colors[BoardHandler.winner]())
     
     local x = GAME_START_X + (GAME_WIDTH / 2)
     local y = GAME_HEIGHT / 2
