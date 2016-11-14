@@ -48,13 +48,6 @@ function Board.new(row, column)
           return true, self.spaces[3]
         end
         return false, self.winner
-        --[[
-        if (self.spaces[1] == self.spaces[2] and self.spaces[2] == self.spaces[3] and self.spaces[3] ~= 0) then
-          return true, self.spaces[3]
-        else
-          return false, self.winner
-        end
-        ]]--
       else
         return true, self.winner
       end
@@ -80,6 +73,7 @@ function Board.new(row, column)
   
   function board:draw()
     SpriteHandler.drawSprite(board.sprite, board.x, board.y)
+
     if self.over and self.winner > 0 then
       if self.winner == 1 then
         Board.draw_sprite = Board.big_x
@@ -88,6 +82,7 @@ function Board.new(row, column)
       end
       SpriteHandler.drawSprite(Board.draw_sprite, self.x, self.y)
     end
+    
     for i = 0, 2 do
       for j = 0, 2 do
         char = self.spaces[(i + (j * 3)) + 1]

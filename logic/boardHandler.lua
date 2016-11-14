@@ -2,6 +2,11 @@ local BoardHandler = {}
 Board = require("logic.board")
 
 BoardHandler.usable = 0
+BoardHandler.over = false
+BoardHandler.winner = 1
+BoardHandler.giant_x = SpriteHandler.loadSprite("giant_x.tga", 1, 1)
+BoardHandler.giant_o = SpriteHandler.loadSprite("giant_o.tga", 1, 1)
+BoardHandler.draw_sprite = Board.blank
 
 BoardHandler.boards = {}
 local index = 1
@@ -14,6 +19,10 @@ end
 
 function BoardHandler.checkClick(x, y, button)
   if button == 1 then
+    if (BoardHandler.over) then 
+      return 
+    end
+    
     local row = math.floor(y / (SMALL_CELL_SIZE + BIG_BORDER_SIZE))
     local column = math.floor((x - GAME_START_X) / (SMALL_CELL_SIZE + BIG_BORDER_SIZE))
     
@@ -38,6 +47,7 @@ function BoardHandler.checkClick(x, y, button)
             elseif (inner_index == 3) then
               inner_index = 7
             end
+            BoardHandler.boards[inner_index]:update(0)
             if (BoardHandler.boards[inner_index].over) then
               BoardHandler.usable = 0
             else
@@ -50,47 +60,48 @@ function BoardHandler.checkClick(x, y, button)
   end
 end
 
---[[
 function BoardHandler.checkWinner()
-  if (self.over) then        
-    return true, self.winner
-  else
-    local full = self:isFull()
-    if (not full) then
-      for i = 1, 3 do
-        if (self.spaces[i] == self.spaces[i + 3] and self.spaces[i + 3] == self.spaces[i + 6] and self.spaces[i + 6] ~= 0) then
-          return true, self.spaces[i]
-        end
-        local j = 1 + (3 * (i - 1))
-        if (self.spaces[j] == self.spaces[j + 1] and self.spaces[j + 1] == self.spaces[j + 2] and self.spaces[j + 2] ~= 0) then
-          return true, self.spaces[j]
-        end
-      end
-      if (self.spaces[1] == self.spaces[5] and self.spaces[5] == self.spaces[9] and self.spaces[9] ~= 0) then
-        return true, self.spaces[1]
-      end
-      if (self.spaces[3] == self.spaces[5] and self.spaces[5] == self.spaces[7] and self.spaces[7] ~= 0) then
-        return true, self.spaces[3]
-      end
-      return false, self.winner
-      --[[
-      if (self.spaces[1] == self.spaces[2] and self.spaces[2] == self.spaces[3] and self.spaces[3] ~= 0) then
-        return true, self.spaces[3]
-      else
-        return false, self.winner
-      end
-      ]]--
-    else
-      return true, self.winner
+  if (BoardHandler.over) then
+    return true, BoardHandler.winner
+  end
+  
+  local count = 0
+  for i = 1, #BoardHandler.boards do
+    if (BoardHandler.boards[i]:isFull()) then
+      count = count + 1
     end
   end
+  
+  if (count == #BoardHandler.boards) then        
+    return true, BoardHandler.winner
+  else
+    for i = 1, 3 do
+      if (BoardHandler.boards[i].winner == BoardHandler.boards[i + 3].winner and BoardHandler.boards[i + 3].winner == BoardHandler.boards[i + 6].winner and BoardHandler.boards[i + 6].winner ~= 0) then
+        return true, BoardHandler.boards[i].winner
+      end
+      local j = 1 + (3 * (i - 1))
+      if (BoardHandler.boards[j].winner == BoardHandler.boards[j + 1].winner and BoardHandler.boards[j + 1].winner == BoardHandler.boards[j + 2].winner and BoardHandler.boards[j + 2].winner ~= 0) then
+        return true, BoardHandler.boards[j].winner
+      end
+    end
+    if (BoardHandler.boards[1].winner == BoardHandler.boards[5].winner and BoardHandler.boards[5].winner == BoardHandler.boards[9].winner and BoardHandler.boards[9].winner ~= 0) then
+      return true, BoardHandler.boards[1].winner
+    end
+    if (BoardHandler.boards[3].winner == BoardHandler.boards[5].winner and BoardHandler.boards[5].winner == BoardHandler.boards[7].winner and BoardHandler.boards[7].winner ~= 0) then
+      return true, BoardHandler.boards[3].winner
+    end
+    return false, BoardHandler.winner
+  end
 end
-]]--
 
 function BoardHandler.update(dt)
-  for i = 1, #BoardHandler.boards do
-    BoardHandler.boards[i]:update(dt)
+  if (not BoardHandler.over) then
+    for i = 1, #BoardHandler.boards do
+      BoardHandler.boards[i]:update(dt)
+    end
   end
+  
+  BoardHandler.over, BoardHandler.winner = BoardHandler.checkWinner()
 end
 
 function BoardHandler.drawBoard()
@@ -131,6 +142,20 @@ function BoardHandler.draw()
       love.graphics.setColor(BoardHandler.boards[i]:getColor())
     end
     BoardHandler.boards[i]:draw()
+  end
+  
+  if (BoardHandler.over and BoardHandler.winner > 0) then
+    if (BoardHandler.winner == 1) then
+      BoardHandler.draw_sprite = BoardHandler.giant_x
+    else 
+      BoardHandler.draw_sprite = BoardHandler.giant_o
+    end
+    
+    love.graphics.setColor(0, 255, 255, 255)
+    
+    local x = GAME_START_X + (GAME_WIDTH / 2)
+    local y = GAME_HEIGHT / 2
+    SpriteHandler.drawSprite(BoardHandler.giant_x, x, y)
   end
 end
 
