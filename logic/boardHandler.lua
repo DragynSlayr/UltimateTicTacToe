@@ -4,9 +4,12 @@ Board = require("logic.board")
 BoardHandler.usable = 0
 BoardHandler.over = false
 BoardHandler.winner = 1
+
 BoardHandler.giant_x = SpriteHandler.loadSprite("giant_x.tga", 1, 1)
 BoardHandler.giant_o = SpriteHandler.loadSprite("giant_o.tga", 1, 1)
 BoardHandler.draw_sprite = Board.blank
+
+BoardHandler.turn_indicator = SpriteHandler.loadSprite("indicator.tga", 1, 1)
 
 BoardHandler.boards = {}
 local index = 1
@@ -165,6 +168,23 @@ function BoardHandler.draw()
     local x = GAME_START_X + (GAME_WIDTH / 2)
     local y = GAME_HEIGHT / 2
     SpriteHandler.drawSprite(BoardHandler.giant_x, x, y)
+  end
+  
+  if (not BoardHandler.over) then
+    local x = 0
+    local y = GAME_HEIGHT / 2
+    local sprite = nil
+    if (Driver.turn == 1) then
+      x = GAME_WIDTH + 630
+      sprite = Board.big_o
+    else
+      x = 210
+      sprite = Board.big_x
+    end
+    
+    local r, g, b, a = Driver.colors[Driver.turn + 1]()
+    love.graphics.setColor(r, g, b, 127)
+    SpriteHandler.drawSprite(sprite, x, y)
   end
 end
 

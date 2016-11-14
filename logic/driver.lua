@@ -30,6 +30,7 @@ function Driver.load()
 end
 
 function Driver.update(dt)
+  print(Driver.turn)
   Driver.x, Driver.y = love.mouse.getPosition()
   Driver.message = string.format("LOC: %d", BoardHandler.usable)
   BoardHandler.update(dt)
