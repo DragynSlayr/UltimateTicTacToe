@@ -9,8 +9,6 @@ BoardHandler.giant_x = SpriteHandler.loadSprite("giant_x.tga", 1, 1)
 BoardHandler.giant_o = SpriteHandler.loadSprite("giant_o.tga", 1, 1)
 BoardHandler.draw_sprite = Board.blank
 
-BoardHandler.turn_indicator = SpriteHandler.loadSprite("indicator.tga", 1, 1)
-
 BoardHandler.boards = {}
 local index = 1
 for i = 0, 2 do
@@ -167,7 +165,7 @@ function BoardHandler.draw()
     
     local x = GAME_START_X + (GAME_WIDTH / 2)
     local y = GAME_HEIGHT / 2
-    SpriteHandler.drawSprite(BoardHandler.giant_x, x, y)
+    SpriteHandler.drawSprite(BoardHandler.draw_sprite, x, y)
   end
   
   if (not BoardHandler.over) then
