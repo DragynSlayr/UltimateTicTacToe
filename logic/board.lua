@@ -32,11 +32,29 @@ function Board.new(row, column)
     else
       local full = self:isFull()
       if (not full) then
+        for i = 1, 3 do
+          if (self.spaces[i] == self.spaces[i + 3] and self.spaces[i + 3] == self.spaces[i + 6] and self.spaces[i + 6] ~= 0) then
+            return true, self.spaces[i]
+          end
+          local j = 1 + (3 * (i - 1))
+          if (self.spaces[j] == self.spaces[j + 1] and self.spaces[j + 1] == self.spaces[j + 2] and self.spaces[j + 2] ~= 0) then
+            return true, self.spaces[j]
+          end
+        end
+        if (self.spaces[1] == self.spaces[5] and self.spaces[5] == self.spaces[9] and self.spaces[9] ~= 0) then
+          return true, self.spaces[1]
+        end
+        if (self.spaces[3] == self.spaces[5] and self.spaces[5] == self.spaces[7] and self.spaces[7] ~= 0) then
+          return true, self.spaces[3]
+        end
+        return false, self.winner
+        --[[
         if (self.spaces[1] == self.spaces[2] and self.spaces[2] == self.spaces[3] and self.spaces[3] ~= 0) then
           return true, self.spaces[3]
         else
           return false, self.winner
         end
+        ]]--
       else
         return true, self.winner
       end
